@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+      <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+      <meta charset="utf-8">
+      <title>ERP CIGAM - Geoprocessamento</title>
+       <style> #map,#right-panel select{width:100%}</style>
+       <style>#right-panel{font-family:Roboto,sans-serif;line-height:30px;padding-left:10px}#right-panel input,#right-panel select{font-size:15px}#right-panel i{font-size:12px}body,html{height:100%;margin:0;padding:0}#map{float:left;height:100%}#right-panel{margin:20px;border-width:2px;width:20%;height:400px;float:left;text-align:left;padding-top:0}#directions-panel{margin-top:10px;background-color:#FE7;padding:10px}</style>
+
+      <script async defer   src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAoNMOfzJm3Tz6WvansjQGCMvSVY62eYQ8           &callback=initMap"></script>
+      <script>
+        function initMap() {
+          var directionsService = new google.maps.DirectionsService;
+          var directionsDisplay = new google.maps.DirectionsRenderer;
+          var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: {lat: -15.29, lng: -50}
+          });
+          directionsDisplay.setMap(map);
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+        }
+
+        function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+          var stringUF =    'R&#46; CHINOCA BARNASQUE&#44;646&#45;SAO FRANCISCO&#44;SAO SEPE&#45;RS?R&#46; OSCAR ANDREAZA&#44;51&#45;CENTRO&#44;VILA NOVA DO SUL&#45;RS?R&#46; FLORESTA&#44;180&#45;CAMOBI&#44;SANTA MARIA&#45;RS?R&#46; RIO BRANCO&#44;2170&#45;SAO JOAO&#44;SANTA MARIA&#45;RS?R&#46; FERNANDES VIEIRA&#44;150&#45;CAROLINA&#44;SANTA MARIA&#45;RS';
+          var stringUFaux = stringUF.split('?');
+          var waypts = [];
+          for (var i = 0; i < stringUFaux.length; i++) {
+              waypts.push({
+               location: stringUFaux[i],
+               stopover: true
+              });
+        }
+        directionsService.route({
+          origin: 'RUA ARCELINO ALVES CAVALHEIRO&#44;84&#45;INDUSTRIAL II&#44;SANANDUVA&#45;RS',
+          destination:'R&#46; MANOEL MALLMANN FILHO&#44;1&#45;JUCELINO KUBITSCHEK&#44;SANTA MARIA&#45;RS',
+          waypoints: waypts,
+          optimizeWaypoints: true,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+               directionsDisplay.setDirections(response);
+               var route = response.routes[0];
+           });
+
+         }
+       </script>
+     </head>
+     <body>
+       <div id="map">      </div>
+     </body>
+   </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
