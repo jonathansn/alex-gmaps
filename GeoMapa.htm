@@ -18,31 +18,70 @@
             center: {lat: -15.29, lng: -50}
           });
           directionsDisplay.setMap(map);
-          calculateAndDisplayRoute(directionsService, directionsDisplay);
+          var markerArray = [];
+          var markerDisplay = new google.maps.InfoWindow();
+          calculateAndDisplayRoute(directionsService, directionsDisplay, markerArray, markerDisplay, map);
         }
 
-        function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        function calculateAndDisplayRoute(
+          directionsService,
+          directionsDisplay,
+          markerArray,
+          markerDisplay,
+          map
+          ) {
+          for (let i = 0; i < markerArray.length; i++) {
+            markerArray[i].setMap(null);
+          }
+
           var stringUF =    'R&#46; CHINOCA BARNASQUE&#44;646&#45;SAO FRANCISCO&#44;SAO SEPE&#45;RS?R&#46; OSCAR ANDREAZA&#44;51&#45;CENTRO&#44;VILA NOVA DO SUL&#45;RS?R&#46; FLORESTA&#44;180&#45;CAMOBI&#44;SANTA MARIA&#45;RS?R&#46; RIO BRANCO&#44;2170&#45;SAO JOAO&#44;SANTA MARIA&#45;RS?R&#46; FERNANDES VIEIRA&#44;150&#45;CAROLINA&#44;SANTA MARIA&#45;RS';
           var stringUFaux = stringUF.split('?');
-          var waypts = [];
+          
           for (var i = 0; i < stringUFaux.length; i++) {
-              waypts.push({
+            markerArray.push({
                location: stringUFaux[i],
                stopover: true
-              });
-        }
-        directionsService.route({
-          origin: 'RUA ARCELINO ALVES CAVALHEIRO&#44;84&#45;INDUSTRIAL II&#44;SANANDUVA&#45;RS',
-          destination:'R&#46; MANOEL MALLMANN FILHO&#44;1&#45;JUCELINO KUBITSCHEK&#44;SANTA MARIA&#45;RS',
-          waypoints: waypts,
-          optimizeWaypoints: true,
-          travelMode: 'DRIVING'
-        }, function(response, status) {
-               directionsDisplay.setDirections(response);
-               var route = response.routes[0];
-           });
+              });          
+          }
 
-         }
+          directionsService.route({
+            origin: 'RUA ARCELINO ALVES CAVALHEIRO&#44;84&#45;INDUSTRIAL II&#44;SANANDUVA&#45;RS',
+            destination:'R&#46; MANOEL MALLMANN FILHO&#44;1&#45;JUCELINO KUBITSCHEK&#44;SANTA MARIA&#45;RS',
+            waypoints: markerArray,
+            optimizeWaypoints: true,
+            travelMode: 'DRIVING'
+          }, function(response, status) {
+                directionsDisplay.setOptions({suppressMarkers : true});
+                directionsDisplay.setDirections(response);
+
+                showSteps(response, markerArray, markerDisplay, map);
+            });
+
+          }
+
+          function showSteps(directionResult, markerArray, markerDisplay, map) {
+            var route = directionResult.routes[0].legs[0];
+
+            for (let i = 0; i < markerArray.length; i++) {
+              var marker = new google.maps.Marker({icon: 'truck.png'});
+              marker.setMap(map);
+              marker.setPosition(directionResult.routes[0].legs[i].start_location);
+
+              attachHtmlText(
+                markerDisplay,
+                marker,
+                `<div style="display: flex; flex-direction: column; justify-content: center; align-items: center;"><div style="font-size: 18px; font-weight: bold;">${i}</div><div>entregas</div></div>`,
+                map
+              );
+            }
+          }
+
+          function attachHtmlText(markerDisplay, marker, text, map) {
+            google.maps.event.addListener(marker, "click", () => {
+              markerDisplay.setContent(text);
+              markerDisplay.open(map, marker);
+            });
+          }
        </script>
      </head>
      <body>
